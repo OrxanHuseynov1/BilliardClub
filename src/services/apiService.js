@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://localhost:7199/api'; 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const api = axios.create({
     baseURL: API_BASE_URL,
@@ -148,7 +148,6 @@ const apiService = {
         const response = await api.delete(`/Expenses/${id}`);
         return response.data;
     },
-    // Yeni əlavə olunan funksiya
     getExpensesForReport: async (startDate, endDate) => {
         try {
             const params = {};
