@@ -13,7 +13,7 @@ export default function EmployeesPage() {
   const [searchTerm, setSearchTerm] = useState("");
 
   const [modalOpen, setModalOpen] = useState(false);
-  const [modalMode, setModalMode] = useState("add"); 
+  const [modalMode, setModalMode] = useState("add");
   const [modalMessage, setModalMessage] = useState("");
   const [form, setForm] = useState({ name: "", code: "" });
   const [editingId, setEditingId] = useState(null);
@@ -43,7 +43,7 @@ export default function EmployeesPage() {
 
   const openAddModal = () => {
     setModalMode("add");
-    setForm({ name: "", code: "" }); 
+    setForm({ name: "", code: "" });
     setModalMessage("");
     setModalOpen(true);
   };
@@ -90,7 +90,7 @@ export default function EmployeesPage() {
           id: editingId,
           name: form.name,
           code: Number(form.code),
-          role: 1, 
+          role: 1,
         }, {
           headers: { Authorization: `Bearer ${user.token}` },
         });
@@ -137,20 +137,20 @@ export default function EmployeesPage() {
   });
 
   return (
-    <div className="p-4 max-w-full w-full">
-      <h1 className="text-3xl font-bold mb-6 text-emerald-600">İşçilər</h1>
+    <div className="container mx-auto mt-10 p-4">
+      <h1 className="text-3xl font-bold mb-6 text-emerald-600 text-center">İşçilər</h1>
 
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-4">
         <input
           type="text"
           placeholder="Ad və ya kod axtar..."
-          className="border border-gray-300 rounded px-3 py-2 w-72 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+          className="border border-gray-300 rounded px-3 py-2 w-full sm:w-72 focus:outline-none focus:ring-2 focus:ring-emerald-500"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
         <button
           onClick={openAddModal}
-          className="bg-emerald-500 hover:bg-emerald-600 text-white px-5 py-2 rounded-lg transition"
+          className="bg-emerald-500 hover:bg-emerald-600 text-white px-5 py-2 rounded-lg transition w-full sm:w-auto"
         >
           Yeni İşçi Əlavə et
         </button>
@@ -161,7 +161,7 @@ export default function EmployeesPage() {
       ) : filteredEmployees.length === 0 ? (
         <p className="text-center text-gray-500">İşçi tapılmadı.</p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredEmployees.map((employee) => (
             <div
               key={employee.id}
@@ -263,7 +263,7 @@ export default function EmployeesPage() {
           >
             <h3 className="text-lg font-semibold mb-4 text-red-600">Diqqət!</h3>
             <p className="mb-6">İşçi silinsin? Əminsiniz?</p>
-            <div className="flex justify-end space-x-4">
+            <div className="flex justify-center gap-4">
               <button
                 onClick={() => setConfirmDelete(false)}
                 className="px-4 py-2 rounded border border-gray-300 hover:bg-gray-100 transition"

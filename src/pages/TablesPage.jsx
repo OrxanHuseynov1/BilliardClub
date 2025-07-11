@@ -12,7 +12,7 @@ export default function TablesPage() {
   const [loading, setLoading] = useState(false);
 
   const [modalOpen, setModalOpen] = useState(false);
-  const [modalMode, setModalMode] = useState("add"); 
+  const [modalMode, setModalMode] = useState("add");
   const [modalMessage, setModalMessage] = useState("");
   const [form, setForm] = useState({ tableName: "", type: 1 });
   const [editingId, setEditingId] = useState(null);
@@ -123,9 +123,10 @@ export default function TablesPage() {
     const numB = parseInt((b.tableName || "").match(/\d+/)?.[0] || "0");
     return numA - numB;
   });
+
   return (
-    <div className="p-4 max-w-full w-full">
-      <h1 className="text-3xl font-bold mb-6 text-emerald-600">Masalar</h1>
+    <div className="container mx-auto mt-10 p-4">
+      <h1 className="text-3xl font-bold mb-6 text-emerald-600 text-center">Masalar</h1>
 
       <button
         onClick={openAddModal}
@@ -142,58 +143,87 @@ export default function TablesPage() {
 
       {loading ? (
         <p className="text-center">Yüklənir...</p>
+      ) : sortedTables.length === 0 ? (
+        <p className="text-center text-gray-500">Masalar tapılmadı.</p>
       ) : (
-        <div className="overflow-x-auto rounded-lg shadow bg-white">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-emerald-100">
-              <tr>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
-                  Masa Adı
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
-                  Növ
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
-                  Əməliyyatlar
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {sortedTables.length === 0 && (
+        <>
+          {/* Desktop üçün cədvəl görünüşü */}
+          <div className="overflow-x-auto rounded-lg shadow bg-white hidden lg:block">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-emerald-100">
                 <tr>
-                  <td colSpan={3} className="p-4 text-center text-gray-500">
-                    Masalar tapılmadı.
-                  </td>
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
+                    Masa Adı
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
+                    Növ
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
+                    Əməliyyatlar
+                  </th>
                 </tr>
-              )}
-              {sortedTables.map((table) => (
-                <tr
-                  key={table.id}
-                  className="hover:bg-emerald-50 cursor-pointer transition"
-                >
-                  <td className="px-6 py-3 whitespace-nowrap">{table.tableName}</td>
-                  <td className="px-6 py-3 whitespace-nowrap">
-                    {tableTypes.find((t) => t.value === table.type)?.label || table.type}
-                  </td>
-                  <td className="px-6 py-3 whitespace-nowrap space-x-3 flex">
-                    <button
-                      onClick={() => openEditModal(table)}
-                      className="px-3 py-1 rounded bg-emerald-500 text-white text-sm font-medium hover:bg-emerald-600 transition"
-                    >
-                      Redaktə et
-                    </button>
-                    <button
-                      onClick={() => confirmDeleteTable(table.id)}
-                      className="px-3 py-1 rounded border border-red-500 text-red-600 text-sm font-medium hover:bg-red-600 hover:text-white transition"
-                    >
-                      Sil
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {sortedTables.map((table) => (
+                  <tr
+                    key={table.id}
+                    className="hover:bg-emerald-50 cursor-pointer transition"
+                  >
+                    <td className="px-6 py-3 whitespace-nowrap">{table.tableName}</td>
+                    <td className="px-6 py-3 whitespace-nowrap">
+                      {tableTypes.find((t) => t.value === table.type)?.label || table.type}
+                    </td>
+                    <td className="px-6 py-3 whitespace-nowrap space-x-3 flex">
+                      <button
+                        onClick={() => openEditModal(table)}
+                        className="px-3 py-1 rounded bg-emerald-500 text-white text-sm font-medium hover:bg-emerald-600 transition"
+                      >
+                        Redaktə et
+                      </button>
+                      <button
+                        onClick={() => confirmDeleteTable(table.id)}
+                        className="px-3 py-1 rounded border border-red-500 text-red-600 text-sm font-medium hover:bg-red-600 hover:text-white transition"
+                      >
+                        Sil
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobil və Tablet üçün kart görünüşü */}
+          <div className="lg:hidden grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+            {sortedTables.map((table) => (
+              <div
+                key={table.id}
+                className="bg-white shadow-md rounded-lg p-5 flex flex-col justify-between border border-gray-200"
+              >
+                <div>
+                  <div className="mb-2 font-semibold text-lg text-emerald-700">{table.tableName}</div>
+                  <div className="mb-2 text-gray-600">
+                    Növ: {tableTypes.find((t) => t.value === table.type)?.label || table.type}
+                  </div>
+                </div>
+                <div className="mt-4 flex flex-wrap justify-end gap-2">
+                  <button
+                    onClick={() => openEditModal(table)}
+                    className="px-3 py-1 rounded bg-emerald-500 text-white text-sm font-medium hover:bg-emerald-600 transition"
+                  >
+                    Redaktə et
+                  </button>
+                  <button
+                    onClick={() => confirmDeleteTable(table.id)}
+                    className="px-3 py-1 rounded border border-red-500 text-red-600 text-sm font-medium hover:bg-red-600 hover:text-white transition"
+                  >
+                    Sil
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
       )}
 
       {modalOpen && (
@@ -205,7 +235,7 @@ export default function TablesPage() {
             className="bg-white rounded-lg p-6 max-w-md w-full shadow-lg"
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 className="text-xl font-semibold mb-4 text-emerald-700">
+            <h2 className="text-xl font-semibold mb-4 text-emerald-700 text-center">
               {modalMode === "add" ? "Yeni Masa Əlavə et" : "Masa Redaktə et"}
             </h2>
 
@@ -237,7 +267,7 @@ export default function TablesPage() {
             )}
 
             {modalMessage && (
-              <p className="mb-4 text-red-600 font-medium select-none">{modalMessage}</p>
+              <p className="mb-4 text-red-600 font-medium select-none text-center">{modalMessage}</p>
             )}
 
             <div className="flex justify-end space-x-3">
@@ -264,12 +294,12 @@ export default function TablesPage() {
           onClick={() => setConfirmDelete(false)}
         >
           <div
-            className="bg-white rounded-lg p-6 max-w-sm w-full shadow-lg"
+            className="bg-white rounded-lg p-6 max-w-sm w-full shadow-lg text-center"
             onClick={(e) => e.stopPropagation()}
           >
             <h3 className="text-lg font-semibold mb-4 text-red-600">Diqqət!</h3>
             <p className="mb-6">Masa silinsin? Əminsiniz?</p>
-            <div className="flex justify-end space-x-4">
+            <div className="flex justify-center gap-4">
               <button
                 onClick={() => setConfirmDelete(false)}
                 className="px-4 py-2 rounded border border-gray-300 hover:bg-gray-100 transition"

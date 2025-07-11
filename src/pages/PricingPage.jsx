@@ -105,7 +105,7 @@ export default function PricingPage() {
 
   return (
     <div>
-      <h1 className="text-3xl font-semibold mb-6">Qiymətləndirmə</h1>
+      <h1 className="text-3xl font-bold  mt-10 mb-6 text-emerald-600">Qiymətləndirmə</h1>
 
       <button
         onClick={openAddModal}

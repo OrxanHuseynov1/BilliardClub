@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import {
   FaTable,
   FaMoneyBillWave,
@@ -13,11 +13,10 @@ import {
   FaChartLine
 } from 'react-icons/fa';
 
-export default function SellerSidebar() {
+export default function SellerSidebar({ open, setOpen }) {
   const { user, logout } = useAuth();
   const { pathname } = useLocation();
   const navigate = useNavigate();
-  const [open, setOpen] = useState(false);
 
   const menu = [
     { name: 'Rezervasiya', path: '/dashboard/reservations', icon: <FaCalendarCheck /> },
@@ -37,16 +36,15 @@ export default function SellerSidebar() {
   return (
     <>
       <button
-        className="md:hidden fixed top-4 left-4 z-30 bg-emerald-500 text-white p-2 rounded-full shadow-md hover:bg-emerald-600 transition"
+        className="fixed top-4 left-4 z-30 bg-emerald-500 text-white p-2 rounded-full shadow-md hover:bg-emerald-600 transition"
         onClick={() => setOpen(!open)}
       >
-        {open ? <FaTimes /> : <FaBars />}
+        {open ? <FaTimes className="text-xl" /> : <FaBars className="text-xl" />}
       </button>
 
       <div
         className={`fixed top-0 left-0 h-full bg-white shadow-lg z-20 transition-transform duration-300 w-64
-        ${open ? 'translate-x-0' : '-translate-x-full'}
-        md:translate-x-0`}
+        ${open ? 'translate-x-0' : '-translate-x-full'}`}
       >
         <div className="text-3xl font-bold text-emerald-600 text-center py-6 border-b select-none">
           NextOne

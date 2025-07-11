@@ -6,6 +6,8 @@ const getPaymentTypeName = (paymentType) => {
             return 'Nağd';
         case 1:
             return 'Kart';
+        case 2:
+            return 'Köçürmə';
         default:
             return 'Qeyd olunmayıb';
     }
@@ -36,7 +38,7 @@ function SessionDetailsModal({ isOpen, onClose, sessionDetails }) {
                     </p>
                 </div>
 
-                <p className='mb-6'>---------------------------------------------------------------------</p>
+                <hr className="my-6 border-gray-300" />
 
                 {sessionDetails.sessionProducts && sessionDetails.sessionProducts.length > 0 && (
                     <div className="mb-6">

@@ -8,14 +8,14 @@ const ExpensesPage = () => {
     const [error, setError] = useState(null);
     const [message, setMessage] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [confirmModalOpen, setConfirmModalOpen] = useState(false); // Yeni state
-    const [expenseToDeleteId, setExpenseToDeleteId] = useState(null); // Yeni state
+    const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+    const [expenseToDeleteId, setExpenseToDeleteId] = useState(null);
 
     const [formData, setFormData] = useState({
         name: '',
         description: '',
         amount: '',
-        date: format(new Date(), 'yyyy-MM-ddTHH:mm'), 
+        date: format(new Date(), 'yyyy-MM-ddTHH:mm'),
         category: 'Ümumi',
         recordedBy: 'Sistem',
     });
@@ -83,11 +83,14 @@ const ExpensesPage = () => {
                 name: formData.name,
                 description: formData.description,
                 amount: amountValue,
+                date: formData.date,
+                category: formData.category,
+                recordedBy: formData.recordedBy,
             };
 
             await apiService.addExpense(dataToSend);
             setMessage('Yeni xərc uğurla əlavə edildi!');
-            
+
             setIsModalOpen(false);
             setFormData({
                 name: '',
@@ -117,16 +120,14 @@ const ExpensesPage = () => {
         setIsModalOpen(true);
     };
 
-    // handleDeleteClick funksiyası yeniləndi
     const handleDeleteClick = (id) => {
-        setExpenseToDeleteId(id); // Silinəcək xərcin ID-sini saxlayırıq
-        setConfirmModalOpen(true); // Təsdiqləmə modalını açırıq
+        setExpenseToDeleteId(id);
+        setConfirmModalOpen(true);
     };
 
-    // Təsdiqləmə modalından sonra silmə əməliyyatı
     const handleConfirmDelete = async () => {
-        setConfirmModalOpen(false); // Modalı bağlayırıq
-        if (!expenseToDeleteId) return; // ID yoxdursa heç nə etmirik
+        setConfirmModalOpen(false);
+        if (!expenseToDeleteId) return;
 
         setLoading(true);
         setError(null);
@@ -139,18 +140,18 @@ const ExpensesPage = () => {
             setError('Xərci silərkən xəta baş verdi: ' + (err.response?.data?.error || err.message));
         } finally {
             setLoading(false);
-            setExpenseToDeleteId(null); // ID-ni sıfırlayırıq
+            setExpenseToDeleteId(null);
         }
     };
 
     const handleCancelDelete = () => {
-        setConfirmModalOpen(false); // Modalı bağlayırıq
-        setExpenseToDeleteId(null); // ID-ni sıfırlayırıq
+        setConfirmModalOpen(false);
+        setExpenseToDeleteId(null);
     };
 
     return (
-        <div className="container mx-auto p-4">
-            <h1 className="text-3xl font-bold mb-6 text-emerald-600">Xərclər</h1>
+        <div className="container mx-auto mt-10 p-4">
+            <h1 className="text-3xl font-bold mb-6 text-emerald-600 text-center">Xərclər</h1>
 
             <button
                 onClick={handleAddExpenseClick}
@@ -159,7 +160,7 @@ const ExpensesPage = () => {
                 Yeni Xərc Əlavə Et
             </button>
 
-            {loading && <p className="text-blue-500">Yüklənir...</p>}
+            {loading && <p className="text-blue-500 text-center">Yüklənir...</p>}
             {error && (
                 <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
                     <strong className="font-bold">Xəta!</strong>
@@ -173,7 +174,8 @@ const ExpensesPage = () => {
                 </div>
             )}
 
-            <div className="bg-white p-4 rounded-lg shadow-md overflow-x-auto">
+            {/* Cədvəl görünüşü - böyük ekranlar üçün */}
+            <div className="bg-white p-4 rounded-lg shadow-md hidden lg:block">
                 <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
                         <tr>
@@ -208,7 +210,7 @@ const ExpensesPage = () => {
                                             className="text-red-600 hover:text-red-900 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 p-2 rounded-full transition duration-200"
                                             title="Xərci sil"
                                         >
-                                            <i className="fas fa-trash-alt text-lg"></i> 
+                                            <i className="fas fa-trash-alt text-lg"></i>
                                         </button>
                                     </td>
                                 </tr>
@@ -216,6 +218,39 @@ const ExpensesPage = () => {
                         )}
                     </tbody>
                 </table>
+            </div>
+
+            {/* Mobil görünüş - kartlar şəklində */}
+            <div className="lg:hidden mt-6 space-y-4">
+                {expenses && expenses.length === 0 && !loading && !error ? (
+                    <p className="text-center text-gray-600">Heç bir xərc tapılmadı.</p>
+                ) : (
+                    expenses && expenses.map((expense) => (
+                        <div key={expense.id} className="bg-white p-4 rounded-lg shadow-md border border-gray-200">
+                            <div className="font-semibold text-lg mb-2 text-emerald-700">{expense.name}</div>
+                            <div className="text-gray-600 space-y-1">
+                                <p>
+                                    <span className="font-medium">Məbləğ:</span> {expense.amount?.toFixed(2) || '0.00'} AZN
+                                </p>
+                                <p>
+                                    <span className="font-medium">Təsvir:</span> {expense.description || 'Qeyd olunmayıb'}
+                                </p>
+                                <p>
+                                    <span className="font-medium">Tarix:</span> {expense.createdAt ? format(new Date(expense.createdAt), 'dd.MM.yyyy HH:mm') : '-'}
+                                </p>
+                            </div>
+                            <div className="mt-3 flex justify-end">
+                                <button
+                                    onClick={() => handleDeleteClick(expense.id)}
+                                    className="text-red-600 hover:text-red-900 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 p-2 rounded-full transition duration-200"
+                                    title="Xərci sil"
+                                >
+                                    <i className="fas fa-trash-alt text-lg"></i>
+                                </button>
+                            </div>
+                        </div>
+                    ))
+                )}
             </div>
 
             {/* Yeni Xərc Əlavə Et Modalı */}
@@ -286,6 +321,7 @@ const ExpensesPage = () => {
                 </div>
             )}
 
+            {/* Təsdiqləmə Modalı */}
             {confirmModalOpen && (
                 <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center z-50">
                     <div className="bg-white p-8 rounded-lg shadow-xl w-full max-w-sm relative text-center">
