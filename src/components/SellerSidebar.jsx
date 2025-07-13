@@ -20,7 +20,6 @@ export default function SellerSidebar({ open, setOpen }) {
 
   const menu = [
     { name: 'Rezervasiya', path: '/dashboard/reservations', icon: <FaCalendarCheck /> },
-    { name: 'Məhsullar', path: '/dashboard/products', icon: <FaBoxes /> },
     { name: 'Tarixçə', path: '/dashboard/history', icon: <FaHistory /> },
     { name: 'Hesabat', path: '/dashboard/reports', icon: <FaChartLine /> },
   ];
